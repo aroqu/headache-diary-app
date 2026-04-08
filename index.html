@@ -387,6 +387,8 @@
 
   const el = id => document.getElementById(id);
 
+  const reliefOptions = ["complete","moderate","none"];
+
   function populateSelect(id, options, placeholderText="Select...") {
     const select = el(id);
     select.innerHTML = "";
@@ -406,6 +408,17 @@
     const select = el("intensity");
     select.innerHTML = "";
     intensityOptions.forEach(opt => {
+      const option = document.createElement("option");
+      option.value = opt;
+      option.textContent = opt;
+      select.appendChild(option);
+    });
+  }
+
+  function populateRelief() {
+    const select = el("relief");
+    select.innerHTML = "";
+    reliefOptions.forEach(opt => {
       const option = document.createElement("option");
       option.value = opt;
       option.textContent = opt;
