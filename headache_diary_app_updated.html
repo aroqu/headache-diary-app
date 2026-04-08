@@ -1,0 +1,705 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Headache Diary</title>
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --line: #dbe2ea;
+    --accent: #2563eb;
+    --accent-soft: #e8f0ff;
+    --danger: #b91c1c;
+    --success: #166534;
+    --shadow: 0 8px 24px rgba(0,0,0,.08);
+    --radius: 16px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #eff6ff, #ffffff);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    border-radius: 22px;
+    padding: 18px;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    margin: 0 0 8px;
+    font-size: 1.7rem;
+  }
+  .hero p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .grid {
+    display: grid;
+    gap: 16px;
+  }
+  @media (min-width: 900px) {
+    .grid {
+      grid-template-columns: 1.1fr .9fr;
+      align-items: start;
+    }
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .section-title {
+    margin: 0 0 14px;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .form-grid {
+    display: grid;
+    gap: 12px;
+  }
+  @media (min-width: 700px) {
+    .form-grid.two {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  label {
+    display: block;
+    font-size: .92rem;
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  input, select, textarea, button {
+    font: inherit;
+  }
+  input, select, textarea {
+    width: 100%;
+    border: 1px solid #cfd8e3;
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px 13px;
+    color: var(--text);
+  }
+  textarea { min-height: 88px; resize: vertical; }
+  .btn-row, .top-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  button {
+    border: 0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    min-height: 46px;
+  }
+  button.secondary { background: #eef2f7; color: var(--text); border: 1px solid var(--line); }
+  button.danger { background: #fee2e2; color: var(--danger); border: 1px solid #fecaca; }
+  button.success { background: #dcfce7; color: var(--success); border: 1px solid #bbf7d0; }
+  .muted { color: var(--muted); }
+  .tiny { font-size: .84rem; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: .8rem;
+    font-weight: 700;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .stat {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px;
+    background: #fafcff;
+  }
+  .stat .num {
+    font-size: 1.3rem;
+    font-weight: 800;
+  }
+  .entry-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .entry {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px;
+    background: #fff;
+  }
+  .entry-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: start;
+    margin-bottom: 8px;
+  }
+  .entry-title {
+    font-weight: 800;
+    font-size: 1rem;
+  }
+  .entry-sub {
+    color: var(--muted);
+    font-size: .9rem;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 10px;
+  }
+  .chip {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: .8rem;
+  }
+  .entry-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .hr {
+    height: 1px;
+    background: var(--line);
+    margin: 14px 0;
+  }
+  .hidden { display: none !important; }
+  .print-sheet {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: auto;
+    background: #fff;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 880px;
+  }
+  th, td {
+    border: 1px solid #cfd8e3;
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+    font-size: .92rem;
+  }
+  th {
+    background: #f3f6fa;
+    font-weight: 800;
+  }
+  .file-input {
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+  }
+  .file-input input {
+    position: absolute;
+    left: -9999px;
+  }
+  @media print {
+    body { background: #fff; }
+    .no-print, .hero p, .hero .top-actions, #appForm, #historyPanel .tiny, #historyPanel .btn-row, #toolsCard { display: none !important; }
+    .wrap { max-width: none; padding: 0; }
+    .card, .hero { box-shadow: none; border: none; padding: 0; }
+    .grid { display: block; }
+    .print-sheet { border: none; overflow: visible; }
+    table { min-width: 0; }
+    .entry-list .entry { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="top-actions no-print" style="justify-content:space-between;align-items:center;">
+      <div>
+        <h1>Headache Diary</h1>
+        <p>Mobile-friendly tracker you can save to your phone’s home screen. Entries save on this device automatically.</p>
+      </div>
+      <span class="pill">Offline-friendly</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card" id="appForm">
+      <h2 class="section-title">Add or Edit Entry</h2>
+      <form id="entryForm">
+        <input type="hidden" id="entryId" />
+        <div class="form-grid two">
+          <div>
+            <label for="date">Date</label>
+            <input id="date" type="date" required />
+          </div>
+          <div>
+            <label for="intensity">Intensity (1–10)</label>
+            <select id="intensity" required></select>
+          </div>
+        </div>
+
+        <div class="form-grid two">
+          <div>
+            <label for="startTime">Start time</label>
+            <input id="startTime" type="time" />
+          </div>
+          <div>
+            <label for="endTime">Finish time</label>
+            <input id="endTime" type="time" />
+          </div>
+        </div>
+
+        <div class="form-grid two">
+          <div>
+            <label for="symptoms">Preceding symptoms</label>
+            <input id="symptoms" type="text" placeholder="Enter symptoms" />
+          </div>
+          <div>
+            <label for="triggers">Trigger</label>
+            <input id="triggers" type="text" placeholder="Enter trigger" />
+          </div>
+        </div>
+
+        <div class="form-grid two">
+          <div>
+            <label for="medication">Medication</label>
+            <input id="medication" type="text" placeholder="Ex: Ibuprofen" />
+          </div>
+          <div>
+            <label for="dosage">Dosage</label>
+            <input id="dosage" type="text" placeholder="Ex: 400 mg" />
+          </div>
+        </div>
+
+        <div class="form-grid two">
+          <div>
+            <label for="relief">Relief</label>
+            <input id="relief" type="text" placeholder="Enter relief result" />
+          </div>
+          <div>
+            <label for="duration">Duration notes</label>
+            <input id="duration" type="text" placeholder="Ex: 2 hours total" />
+          </div>
+        </div>
+
+        <div>
+          <label for="notes">Notes</label>
+          <textarea id="notes" placeholder="Anything else that might help identify a pattern..."></textarea>
+        </div>
+
+        <div class="btn-row no-print" style="margin-top: 14px;">
+          <button type="submit" id="saveBtn">Save Entry</button>
+          <button type="button" class="secondary" id="clearBtn">Clear</button>
+        </div>
+      </form>
+    </div>
+
+    <div>
+      <div class="card" id="summaryCard">
+        <h2 class="section-title">Quick Summary</h2>
+        <div class="summary">
+          <div class="stat"><div class="muted tiny">Total entries</div><div class="num" id="totalEntries">0</div></div>
+          <div class="stat"><div class="muted tiny">Average intensity</div><div class="num" id="avgIntensity">0</div></div>
+          <div class="stat"><div class="muted tiny">Most common trigger</div><div class="num tiny" id="topTrigger">—</div></div>
+          <div class="stat"><div class="muted tiny">Most common symptom</div><div class="num tiny" id="topSymptom">—</div></div>
+        </div>
+      </div>
+
+      <div class="card no-print" id="toolsCard" style="margin-top:16px;">
+        <h2 class="section-title">Tools</h2>
+        <div class="btn-row">
+          <button type="button" class="secondary" id="exportCsvBtn">Export CSV</button>
+          <button type="button" class="secondary" id="exportJsonBtn">Backup JSON</button>
+          <label class="file-input">
+            <button type="button" class="secondary" onclick="document.getElementById('importJson').click()">Import JSON</button>
+            <input id="importJson" type="file" accept=".json,application/json" />
+          </label>
+          <button type="button" class="success" id="printBtn">Print Sheet</button>
+          <button type="button" class="danger" id="deleteAllBtn">Delete All</button>
+        </div>
+        <div class="tiny muted" style="margin-top:10px;">
+          Tip: On iPhone, open this file in Safari and use Share → Add to Home Screen.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="historyPanel" style="margin-top:16px;">
+    <div class="btn-row no-print" style="justify-content:space-between; align-items:center;">
+      <h2 class="section-title" style="margin:0;">History</h2>
+      <input id="searchBox" type="text" placeholder="Search notes, meds, triggers..." style="max-width:280px;" />
+    </div>
+    <div id="entryList" class="entry-list"></div>
+    <div id="emptyState" class="muted tiny">No entries yet. Add your first one above.</div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <h2 class="section-title">Printable Diary View</h2>
+    <div class="print-sheet">
+      <table id="printTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time (start/finish)</th>
+            <th>Intensity (1–10)</th>
+            <th>Preceding Symptoms</th>
+            <th>Triggers</th>
+            <th>Medication (and dosage)</th>
+            <th>Relief</th>
+          </tr>
+        </thead>
+        <tbody id="printBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = "headacheDiaryEntriesV1";
+
+  const intensityOptions = [1,2,3,4,5,6,7,8,9,10];
+
+  const el = id => document.getElementById(id);
+
+  function populateSelect(id, options, placeholderText="Select...") {
+    const select = el(id);
+    select.innerHTML = "";
+    const first = document.createElement("option");
+    first.value = "";
+    first.textContent = placeholderText;
+    select.appendChild(first);
+    options.forEach(opt => {
+      const option = document.createElement("option");
+      option.value = opt;
+      option.textContent = opt;
+      select.appendChild(option);
+    });
+  }
+
+  function populateIntensity() {
+    const select = el("intensity");
+    select.innerHTML = "";
+    intensityOptions.forEach(opt => {
+      const option = document.createElement("option");
+      option.value = opt;
+      option.textContent = opt;
+      select.appendChild(option);
+    });
+  }
+
+  function getEntries() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    } catch {
+      return [];
+    }
+  }
+
+  function saveEntries(entries) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  }
+
+  function todayLocal() {
+    const d = new Date();
+    const offset = d.getTimezoneOffset();
+    const local = new Date(d.getTime() - offset * 60000);
+    return local.toISOString().slice(0,10);
+  }
+
+  function resetForm() {
+    el("entryId").value = "";
+    el("date").value = todayLocal();
+    el("startTime").value = "";
+    el("endTime").value = "";
+    el("intensity").value = "";
+    el("symptoms").value = "";
+    el("triggers").value = "";
+    el("medication").value = "";
+    el("dosage").value = "";
+    el("relief").value = "";
+    el("duration").value = "";
+    el("notes").value = "";
+    el("saveBtn").textContent = "Save Entry";
+  }
+
+  function formatDate(value) {
+    if (!value) return "";
+    const [y,m,d] = value.split("-");
+    return `${m}/${d}/${y}`;
+  }
+
+  function timeRange(entry) {
+    if (entry.startTime && entry.endTime) return `${entry.startTime} - ${entry.endTime}`;
+    if (entry.startTime) return `Start: ${entry.startTime}`;
+    if (entry.endTime) return `End: ${entry.endTime}`;
+    return "";
+  }
+
+  function medLine(entry) {
+    const m = entry.medication || "";
+    const d = entry.dosage || "";
+    if (m && d) return `${m} (${d})`;
+    return m || d || "";
+  }
+
+  function intensityBadge(value) {
+    const v = Number(value || 0);
+    let label = "Low";
+    if (v >= 7) label = "High";
+    else if (v >= 4) label = "Medium";
+    return `${v}/10 • ${label}`;
+  }
+
+  function renderSummary(entries) {
+    el("totalEntries").textContent = entries.length;
+    const avg = entries.length
+      ? (entries.reduce((sum, e) => sum + Number(e.intensity || 0), 0) / entries.length).toFixed(1)
+      : "0";
+    el("avgIntensity").textContent = avg;
+
+    const topItem = key => {
+      const counts = {};
+      entries.forEach(e => {
+        const v = (e[key] || "").trim();
+        if (!v) return;
+        counts[v] = (counts[v] || 0) + 1;
+      });
+      const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+      return sorted.length ? sorted[0][0] : "—";
+    };
+
+    el("topTrigger").textContent = topItem("triggers");
+    el("topSymptom").textContent = topItem("symptoms");
+  }
+
+  function renderEntries() {
+    const entries = getEntries().sort((a,b) => (b.date + (b.startTime||"")).localeCompare(a.date + (a.startTime||"")));
+    const query = (el("searchBox").value || "").toLowerCase().trim();
+    const filtered = entries.filter(e => {
+      if (!query) return true;
+      return [
+        e.date, e.startTime, e.endTime, e.intensity, e.symptoms, e.triggers,
+        e.medication, e.dosage, e.relief, e.duration, e.notes
+      ].join(" ").toLowerCase().includes(query);
+    });
+
+    renderSummary(entries);
+
+    const list = el("entryList");
+    list.innerHTML = "";
+
+    el("emptyState").style.display = filtered.length ? "none" : "block";
+
+    filtered.forEach(entry => {
+      const card = document.createElement("div");
+      card.className = "entry";
+      card.innerHTML = `
+        <div class="entry-head">
+          <div>
+            <div class="entry-title">${formatDate(entry.date)} ${entry.startTime ? "• " + entry.startTime : ""}</div>
+            <div class="entry-sub">${timeRange(entry)}</div>
+          </div>
+          <span class="pill">${intensityBadge(entry.intensity)}</span>
+        </div>
+        <div class="chips">
+          ${entry.symptoms ? `<span class="chip">Symptom: ${entry.symptoms}</span>` : ""}
+          ${entry.triggers ? `<span class="chip">Trigger: ${entry.triggers}</span>` : ""}
+          ${entry.relief ? `<span class="chip">Relief: ${entry.relief}</span>` : ""}
+        </div>
+        ${medLine(entry) ? `<div><strong>Medication:</strong> ${medLine(entry)}</div>` : ""}
+        ${entry.duration ? `<div><strong>Duration:</strong> ${entry.duration}</div>` : ""}
+        ${entry.notes ? `<div style="margin-top:8px;"><strong>Notes:</strong> ${entry.notes}</div>` : ""}
+        <div class="entry-actions no-print" style="margin-top:12px;">
+          <button type="button" class="secondary" data-edit="${entry.id}">Edit</button>
+          <button type="button" class="danger" data-delete="${entry.id}">Delete</button>
+        </div>
+      `;
+      list.appendChild(card);
+    });
+
+    document.querySelectorAll("[data-edit]").forEach(btn => {
+      btn.addEventListener("click", () => loadEntry(btn.dataset.edit));
+    });
+    document.querySelectorAll("[data-delete]").forEach(btn => {
+      btn.addEventListener("click", () => deleteEntry(btn.dataset.delete));
+    });
+
+    renderPrintTable(entries);
+  }
+
+  function renderPrintTable(entries) {
+    const body = el("printBody");
+    body.innerHTML = "";
+    const rows = [...entries]
+      .sort((a,b) => (a.date + (a.startTime||"")).localeCompare(b.date + (b.startTime||"")));
+
+    const displayRows = rows.length ? rows : Array.from({length: 8}, () => ({
+      date:"", startTime:"", endTime:"", intensity:"", symptoms:"", triggers:"", medication:"", dosage:"", relief:""
+    }));
+
+    displayRows.forEach(entry => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${entry.date ? formatDate(entry.date) : "&nbsp;"}</td>
+        <td>${timeRange(entry) || "&nbsp;"}</td>
+        <td>${entry.intensity || "&nbsp;"}</td>
+        <td>${entry.symptoms || "&nbsp;"}</td>
+        <td>${entry.triggers || "&nbsp;"}</td>
+        <td>${medLine(entry) || "&nbsp;"}</td>
+        <td>${entry.relief || "&nbsp;"}</td>
+      `;
+      body.appendChild(tr);
+    });
+  }
+
+  function loadEntry(id) {
+    const entry = getEntries().find(e => e.id === id);
+    if (!entry) return;
+    el("entryId").value = entry.id;
+    el("date").value = entry.date || "";
+    el("startTime").value = entry.startTime || "";
+    el("endTime").value = entry.endTime || "";
+    el("intensity").value = entry.intensity || "";
+    el("symptoms").value = entry.symptoms || "";
+    el("triggers").value = entry.triggers || "";
+    el("medication").value = entry.medication || "";
+    el("dosage").value = entry.dosage || "";
+    el("relief").value = entry.relief || "";
+    el("duration").value = entry.duration || "";
+    el("notes").value = entry.notes || "";
+    el("saveBtn").textContent = "Update Entry";
+    window.scrollTo({top: 0, behavior: "smooth"});
+  }
+
+  function deleteEntry(id) {
+    const entries = getEntries().filter(e => e.id !== id);
+    saveEntries(entries);
+    renderEntries();
+  }
+
+  function exportCSV() {
+    const entries = getEntries();
+    const headers = [
+      "Date","Start Time","Finish Time","Intensity","Preceding Symptoms",
+      "Triggers","Medication","Dosage","Relief","Duration Notes","Notes"
+    ];
+    const escapeCell = value => {
+      const v = String(value ?? "");
+      if (/[",\n]/.test(v)) return '"' + v.replace(/"/g, '""') + '"';
+      return v;
+    };
+    const rows = entries.map(e => [
+      e.date, e.startTime, e.endTime, e.intensity, e.symptoms,
+      e.triggers, e.medication, e.dosage, e.relief, e.duration, e.notes
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(escapeCell).join(",")).join("\n");
+    downloadFile("headache-diary.csv", csv, "text/csv;charset=utf-8;");
+  }
+
+  function exportJSON() {
+    const entries = getEntries();
+    downloadFile("headache-diary-backup.json", JSON.stringify(entries, null, 2), "application/json");
+  }
+
+  function downloadFile(filename, content, type) {
+    const blob = new Blob([content], {type});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function importJSONFile(file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (!Array.isArray(data)) throw new Error("Invalid backup file.");
+        saveEntries(data);
+        renderEntries();
+        resetForm();
+        alert("Backup imported.");
+      } catch (err) {
+        alert("Could not import file.");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  el("entryForm").addEventListener("submit", evt => {
+    evt.preventDefault();
+    const entry = {
+      id: el("entryId").value || crypto.randomUUID(),
+      date: el("date").value,
+      startTime: el("startTime").value,
+      endTime: el("endTime").value,
+      intensity: el("intensity").value,
+      symptoms: el("symptoms").value,
+      triggers: el("triggers").value,
+      medication: el("medication").value.trim(),
+      dosage: el("dosage").value.trim(),
+      relief: el("relief").value,
+      duration: el("duration").value.trim(),
+      notes: el("notes").value.trim()
+    };
+
+    const entries = getEntries();
+    const index = entries.findIndex(e => e.id === entry.id);
+    if (index >= 0) entries[index] = entry;
+    else entries.push(entry);
+    saveEntries(entries);
+    resetForm();
+    renderEntries();
+  });
+
+  el("clearBtn").addEventListener("click", resetForm);
+  el("searchBox").addEventListener("input", renderEntries);
+  el("exportCsvBtn").addEventListener("click", exportCSV);
+  el("exportJsonBtn").addEventListener("click", exportJSON);
+  el("printBtn").addEventListener("click", () => window.print());
+  el("deleteAllBtn").addEventListener("click", () => {
+    if (confirm("Delete all entries from this device?")) {
+      localStorage.removeItem(STORAGE_KEY);
+      renderEntries();
+      resetForm();
+    }
+  });
+  el("importJson").addEventListener("change", e => {
+    if (e.target.files && e.target.files[0]) importJSONFile(e.target.files[0]);
+    e.target.value = "";
+  });
+
+  populateIntensity();
+  resetForm();
+  renderEntries();
+</script>
+</body>
+</html>
